@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <utility>
+
 template <typename T>
 class Queue {
 private:
@@ -16,10 +18,10 @@ public:
 
     inline size_t size()const noexcept { return size_; }
     inline size_t count()const noexcept { return count_; }
-    inline const T& front()const noexcept { return data_[front_]; }
-    inline const T& back()const noexcept { return data_[back_]; }
+    inline const T& front()const { if (isEmpty()) { throw std::logic_error("empty queue"); }return data_[front_]; }
+    inline const T& back()const{ if (isEmpty()) { throw std::logic_error("empty queue"); }return data_[back_]; }
 
-    inline bool isFull()const noexcept { return (size_ == count_;) }
+    inline bool isFull()const noexcept { return (size_ == count_); }
     inline bool isEmpty()const noexcept { return (count_ == 0); }
 
     void push(const T& elem);
@@ -53,7 +55,7 @@ Queue<T>::Queue(const Queue<T>& other):size_(other.size_),count_(other.count_),f
 }
 
 template <typename T>
-Queue<T>::Queue(Queue<T>&& other) {
+Queue<T>::Queue(Queue<T>&& other): size_(0), count_(0), front_(0), back_(0), data_(nullptr) {
     swap((*this), other);
 }
 
@@ -61,7 +63,7 @@ template <typename T>
 Queue<T>::~Queue() {
     size_ = 0;count_ = 0;front_ = 0;back_ = 0;
     if (data_) { delete[] data_; }
-    _data = nullptr;
+    data_ = nullptr;
 }
 
 template <typename T>
